@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Github-Page</title>
+        <link rel="stylesheet" href="./css/style.css">
+    </head>
+
+    <body>
+        <audio src="./sound/elf.mp3" autoplay controls loop class="right"></audio>
+        <div id="container">  
+            <h2 id="clock"></h2>
+                <form id="login-form">
+                    <input type="text" placeholder="Enter Your Name" id="search"/>
+                </form>
+            <h3 id="greeting" class="hidden"></h3>
+            <form id="todo-form" class="hidden">
+                <input type="text" placeholder="Write a To do and Enter" id="todoform"/>
+            </form>
+            <ul id="todo-list"></ul>
+        </div>
+        <div id="weather">  
+            <div class="container">
+                <img src="" id="icon"><br>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div id="quote">
+            <span></span><br>
+            <span></span>
+        </div>
+
+        <script src="./js/app.js"></script>
+        <script src="./js/clock.js"></script>
+        <script src="./js/weather.js"></script>
+        <script src="./js/background.js"></script>
+        <script src="./js/todo.js"></script>
+        <script src="./js/quote.js"></script>
+    </body>
+</html>
