@@ -1,115 +1,60 @@
-body {
-    display: inline;
+*,
+*,
+div,
+canvas {
+    outline: 0;
+    margin: 0;
+    padding: 0;
 }
 
-#login-form input {
-    background: none;
-    border: none;
-    outline: none;
-    border-bottom: 3px solid;
-    border-bottom-color: lightgray;
-    color: white;
-}
-
-#login-form input::placeholder {
-    color: violet
-}
-
-#greeting {
-    font-size: 50px;
-    color: azure;
-}
-
-#container {
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-}
-
-.right {
-    float: right;
-}
-
-.container {
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-}
-
-#clock {
-    font-size: 100px;
-    color: white;
-}
-
-#search {
-    text-align: center;
-    font-size: 30px;
-    width: 800px;
-    height: 60px;
-}
-
-#submit {
-    justify-content: center;
-    align-items: center;
-    width: 86px;
-    height: 66px;
-    padding-top: 12px;
-}
-
-span:nth-child(3),
-span:nth-child(4) {
-    font-size: 22px;
-    font-weight: bold;
-    color: yellow;
-    margin: 15px;
-    font-style: italic;
-}
-
-.hidden {
-    display: none;
-}
-
-ul>li * {
-    font-size: 30px;
-}
-
-div#quote {
-    position: fixed;
-    bottom: 0%;
+html {
     width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(2, 2, 2);
+}
+
+h2 {
+    color: rgb(253, 253, 253);
     text-align: center;
-    color: white;
-    font-size: 25px;
-    font-style: italic;
-    pointer-events: none;
 }
 
-#todoform {
-    text-align: center;
-    font-size: 20px;
-    width: 600px;
-    height: 40px;
-    border-radius: 30px;
-}
-
-#weather {
-    position: absolute;
-    left: 0%;
-    top: 5%;
-    margin-bottom: 30px;
-}
-
-#project {
-    width: 20%;
-    background-color: antiquewhite;
-    text-decoration: none;
-    padding-top: 2.5%;
-    padding-bottom: 2.5%;
+.button {
+    background-color: rgb(2, 2, 2);
+    width: 3%;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-a {
-    margin: 5%;
-    text-decoration: none;
+.sound {
+    width: 100%;
+    height: 15%;
+    display: flex;
+    justify-content: center;
+}
+
+.soundWave {
+    width: 94%;
+    height: 100%;
+}
+
+.sound-ui {
+    display: flex;
+    justify-content: end;
+}
+
+.material-symbols-outlined {
+    color: rgb(50, 50, 200);
+}
+
+.footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
 }
