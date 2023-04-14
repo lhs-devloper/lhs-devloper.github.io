@@ -1,35 +1,71 @@
-const loginForm = document.querySelector("#login-form");
-const loginInput = document.querySelector("#login-form input");
-const greeting = document.querySelector("#greeting");
-const toDoForm = document.getElementById("todo-form");
+import { Polygon } from "./polygon.js";
 
-const TODOFORM = "todo-form"
-const TODOINPUT = "#todo-form input"
-const TODOLIST = "#todo-list"
+class App{
+    constructor(){
+        this.canvas = document.createElement("canvas");
+        document.body.appendChild(this.canvas)
+        this.ctx = this.canvas.getContext('2d');
+        
+        this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
+        
+        window.addEventListener('resize', this.resize.bind(this));
+        this.resize();
 
-const HIDDEN_CLASSNAME = "hidden";
-const USERNAME_KEY = "username"
+        this.isDown = false;
+        this.moveX = 0;
+        this.offsetX = 0;
 
-const onLogin = (event) => {
-    event.preventDefault();
-    const username = loginInput.value;
-    localStorage.setItem(USERNAME_KEY, username)
-    paintGreeting(username);
+        document.addEventListener('pointerdown', this.onDown.bind(this), false);
+        document.addEventListener('pointermove', this.onMove.bind(this), false);
+        document.addEventListener('pointerup', this.onUp.bind(this), false)
+
+        window.requestAnimationFrame(this.animate.bind(this));
+    }
+
+    resize(){
+        this.stageWidth = document.body.clientWidth;
+        this.stageHeight = document.body.clientHeight;
+
+        this.canvas.width = this.stageWidth * this.pixelRatio;
+        this.canvas.height = this.stageHeight * this.pixelRatio;
+        this.ctx.scale(this.pixelRatio, this.pixelRatio);
+
+        this.polyGon = new Polygon(
+            this.stageWidth / 2,
+            this.stageHeight + (this.stageHeight/4),
+            this.stageHeight / 1.5,
+            15
+        );
+        
+    }
+    
+    animate(){
+        window.requestAnimationFrame(this.animate.bind(this));
+        
+        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
+
+        this.moveX *= 0.92;
+        this.polyGon.animate(this.ctx, this.moveX);
+    }
+
+    onDown(e){
+        this.isDown = true;
+        this.moveX = 0;
+        this.offsetX = e.clientX;
+    }
+
+    onMove(e){
+        if(this.isDown){
+            this.moveX = e.clientX - this.offsetX;
+            this.offsetX = e.clientX;
+        }
+    }
+
+    onUp(e){
+        this.isDown = false;
+    }
 }
 
-const paintGreeting = (username) => {
-    loginForm.classList.add(HIDDEN_CLASSNAME)
-    greeting.innerText = `Hello! ${username}님`;
-    greeting.classList.remove(HIDDEN_CLASSNAME);
-    toDoForm.classList.remove(HIDDEN_CLASSNAME);
+window.onload =  () => {
+    new App();
 }
-
-const savedUsername = localStorage.getItem(USERNAME_KEY);
-
-if(savedUsername === null){
-    loginForm.classList.remove(HIDDEN_CLASSNAME);
-    loginForm.addEventListener("submit", onLogin);
-} else {
-    paintGreeting(savedUsername);
-}
-
