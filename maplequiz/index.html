@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/mvp.css">  -->
+    <link rel="stylesheet" href="./css/main.css"> 
+    <title>Document</title>
+</head>
+<body>
+    <div class="quiz">
+        <h1>메이플랜드 퀴즈</h1>
+        <p id="timer">남은시간 : 10초</p>
+        <p id="now">진행사항 0 / 50 <span class="ans">(정답: 0 개)</span></p>
+        <input type="text" name="answer" id="answer">
+        <div id="quiz">
+            <img src="./img/미르겔.png" id="random_img" width="300" height="300">
+        </div>    
+        <div>
+            <button type="button" class="reset" id="reset">처음으로</button>
+            <button type="button" class="skip" id="skip">통과</button>
+            <button type="button" class="next" id="next">확인</button>
+        </div>
+    </div>
+</body>
+<script type="module" src="./js/app.js"></script>
+</html>

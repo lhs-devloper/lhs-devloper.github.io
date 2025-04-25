@@ -1,0 +1,44 @@
+body {
+    background-color: black;
+}
+
+h1,
+p {
+    color: white;
+}
+
+.quiz {
+    text-align: center;
+}
+
+input[type=text] {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 22px;
+}
+
+
+.ans {
+    font-weight: bold;
+    color: greenyellow;
+}
+
+button {
+    background-color: peru;
+    border-style: none;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 5px 10px;
+    padding: 5px 20px;
+    color: white;
+}
+
+
+button.skip {
+    background-color: red;
+}
+
+button.next {
+    background-color: blue;
+}
