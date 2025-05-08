@@ -1,0 +1,25 @@
+.npc_list{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.npc_list img{
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    margin: 20px;
+}
+
+.npc{
+    display: block;
+    text-align: center;
+    border: solid white;
+    border-radius: 10px;
+    margin: 50px;
+}
+
+.npc p{
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+}
