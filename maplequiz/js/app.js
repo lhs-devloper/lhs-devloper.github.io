@@ -27,15 +27,27 @@ class App {
         this.skip.addEventListener('click', () => {
             this.quiz.Answer();
             this.answer.value = "";
+            console.log("no_answer");
         })
 
         this.next.addEventListener('click', () => {
             this.quiz.Answer(this.answer.value)
             this.answer.value = "";
+            console.log("answer");
+        });
+
+        this.isComposing = false;
+
+        this.answer.addEventListener("compositionstart", () => {
+            this.isComposing = false;
+        });
+
+        this.answer.addEventListener("compositionend", () => {
+            this.isComposing = true;
         });
 
         this.answer.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") {
+            if (event.key === "Enter" && this.isComposing) {
                 this.quiz.Answer(this.answer.value)
                 this.answer.value = "";
             }
