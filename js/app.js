@@ -1,13 +1,13 @@
 import { Polygon } from "./polygon.js";
 
-class App{
-    constructor(){
-        this.canvas = document.createElement("canvas");
-        document.body.appendChild(this.canvas)
+class App {
+    constructor() {
+        this.canvas = document.getElementById('hero-canvas');
+        if (!this.canvas) return;
+
         this.ctx = this.canvas.getContext('2d');
-        
         this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
-        
+
         window.addEventListener('resize', this.resize.bind(this));
         this.resize();
 
@@ -17,14 +17,14 @@ class App{
 
         document.addEventListener('pointerdown', this.onDown.bind(this), false);
         document.addEventListener('pointermove', this.onMove.bind(this), false);
-        document.addEventListener('pointerup', this.onUp.bind(this), false)
+        document.addEventListener('pointerup', this.onUp.bind(this), false);
 
         window.requestAnimationFrame(this.animate.bind(this));
     }
 
-    resize(){
-        this.stageWidth = document.body.clientWidth;
-        this.stageHeight = document.body.clientHeight;
+    resize() {
+        this.stageWidth = this.canvas.parentElement.clientWidth;
+        this.stageHeight = this.canvas.parentElement.clientHeight;
 
         this.canvas.width = this.stageWidth * this.pixelRatio;
         this.canvas.height = this.stageHeight * this.pixelRatio;
@@ -32,40 +32,37 @@ class App{
 
         this.polyGon = new Polygon(
             this.stageWidth / 2,
-            this.stageHeight + (this.stageHeight/4),
+            this.stageHeight + (this.stageHeight / 4),
             this.stageHeight / 1.5,
             15
         );
-        
     }
-    
-    animate(){
-        window.requestAnimationFrame(this.animate.bind(this));
-        
-        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 
+    animate() {
+        window.requestAnimationFrame(this.animate.bind(this));
+        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
         this.moveX *= 0.92;
         this.polyGon.animate(this.ctx, this.moveX);
     }
 
-    onDown(e){
+    onDown(e) {
         this.isDown = true;
         this.moveX = 0;
         this.offsetX = e.clientX;
     }
 
-    onMove(e){
-        if(this.isDown){
+    onMove(e) {
+        if (this.isDown) {
             this.moveX = e.clientX - this.offsetX;
             this.offsetX = e.clientX;
         }
     }
 
-    onUp(e){
+    onUp() {
         this.isDown = false;
     }
 }
 
-window.onload =  () => {
+window.onload = () => {
     new App();
 }

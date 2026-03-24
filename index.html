@@ -1,27 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" data-theme="dark">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Github-Page</title>
-        <link rel="stylesheet" href="./css/style.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Developer</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
 
-    <body>
-        <div class="header">
-            <header>
-                <a href="https://github.com/lhs-devloper" class="img_sub">
-                    <img src='./images/github.png' style="width: 5%;">
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">Portfolio</a>
+            <button class="nav-toggle" aria-label="메뉴 열기">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="#hero" class="nav-link">Home</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="테마 변경">
+                <i class="fa-solid fa-moon"></i>
+                <i class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <p class="hero-greeting">안녕하세요</p>
+            <h1 class="hero-name">이현서</h1>
+            <p class="hero-role">웹 에지전시 근무중인 웹 개발자 이현서입니다</p>
+            <p class="hero-desc">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">Projects</a>
+                <a href="#contact" class="btn btn-outline">Contact</a>
+            </div>
+            <div class="hero-socials">
+                <a href="https://github.com/lhs-devloper" target="_blank" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
                 </a>
-            </header>
+            </div>
         </div>
-        
-        <div class="portfoilo">
-            <a href="./sheep.html">Interactive sheep</a>
-            <a href="./sound.html">Interactive sound</a>
+        <a href="#skills" class="scroll-indicator" aria-label="아래로 스크롤">
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+        <div class="container">
+            <h2 class="section-title">Skills</h2>
+            <p class="section-subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-brands fa-html5"></i></div>
+                    <h3>HTML / CSS</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                    </p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-brands fa-js"></i></div>
+                    <h3>JavaScript</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                    </p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-brands fa-react"></i></div>
+                    <h3>React</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                    </p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-brands fa-node-js"></i></div>
+                    <h3>Node.js</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                    </p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-brands fa-git-alt"></i></div>
+                    <h3>Git</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                    </p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-solid fa-database"></i></div>
+                    <h3>Database</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                    </p>
+                </div>
+            </div>
         </div>
-        <script src="./js/app.js" type="module"></script>
-    </body>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Projects</h2>
+            <p class="section-subtitle">드래그하여 회전하고, 클릭하여 프로젝트를 확인하세요.</p>
+        </div>
+        <div class="carousel-stage">
+            <canvas id="carousel-canvas"></canvas>
+        </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div class="modal-backdrop" id="project-modal">
+        <div class="modal">
+            <button class="modal-close" aria-label="닫기">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="modal-thumb-wrap" id="modal-thumb-wrap">
+                <img id="modal-thumb" src="" alt="">
+            </div>
+            <div class="modal-body">
+                <h2 class="modal-title" id="modal-title"></h2>
+                <p class="modal-desc" id="modal-desc"></p>
+                <div class="modal-tags" id="modal-tags"></div>
+                <a href="#" class="btn btn-primary" id="modal-link" target="_blank">View Project</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">Contact</h2>
+            <p class="section-subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>lorem@ipsum.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-brands fa-github"></i>
+                        <div>
+                            <h4>GitHub</h4>
+                            <a href="https://github.com/lhs-devloper" target="_blank">github.com/lhs-devloper</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div>
+                            <h4>Location</h4>
+                            <p>Seoul, South Korea</p>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" onsubmit="event.preventDefault();">
+                    <div class="form-group">
+                        <input type="text" placeholder="Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Portfolio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="./js/app.js" type="module"></script>
+    <script src="./js/projects.js" type="module"></script>
+    <script src="./js/theme.js"></script>
+    <script src="./js/nav.js"></script>
+</body>
+
 </html>
