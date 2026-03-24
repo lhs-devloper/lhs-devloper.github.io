@@ -254,8 +254,8 @@ class ProjectCarousel {
         this.dragDelta += Math.abs(dx);
 
         // 드래그 → 회전
-        this.rotation += dx * 0.005;
-        this.velocity = dx * 0.005;
+        this.rotation -= dx * 0.005;
+        this.velocity = -dx * 0.005;
     }
 
     onUp(e) {
