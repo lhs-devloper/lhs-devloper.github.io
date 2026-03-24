@@ -14,7 +14,9 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#hero" class="nav-logo">Portfolio</a>
+            <a href="#hero" class="nav-logo">
+                LHS <span class="logo-sub">&copy; 2026</span>
+            </a>
             <button class="nav-toggle" aria-label="메뉴 열기">
                 <span></span>
                 <span></span>
@@ -34,82 +36,79 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="hero" class="hero">
+    <section id="hero" class="hero modern-hero">
         <canvas id="hero-canvas"></canvas>
-        <div class="hero-content">
-            <p class="hero-greeting">안녕하세요</p>
-            <h1 class="hero-name">이현서</h1>
-            <p class="hero-role">웹 에지전시 근무중인 웹 개발자 이현서입니다</p>
-            <p class="hero-desc">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-            <div class="hero-buttons">
-                <a href="#projects" class="btn btn-primary">Projects</a>
-                <a href="#contact" class="btn btn-outline">Contact</a>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <p class="hero-greeting">Hi, I'm Hyeonseo Lee</p>
+                <h1 class="hero-name display-title">
+                    Creative<br>
+                    <span class="text-gradient">Developer.</span>
+                </h1>
+                <p class="hero-desc">
+                    복잡한 비즈니스 로직을 단순하게, 불편한 UI/UX를 직관적으로.<br>
+                    웹 에이전시에서의 실무 경험을 바탕으로, 실제 사용자의 문제를 해결하는 웹 애플리케이션을 구현합니다.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary btn-lg">View Works</a>
+                </div>
             </div>
-            <div class="hero-socials">
+
+            <div class="hero-socials-modern">
+                <p class="social-label">Follow Me</p>
+                <div class="social-line"></div>
                 <a href="https://github.com/lhs-devloper" target="_blank" aria-label="GitHub">
                     <i class="fa-brands fa-github"></i>
                 </a>
             </div>
         </div>
         <a href="#skills" class="scroll-indicator" aria-label="아래로 스크롤">
-            <i class="fa-solid fa-chevron-down"></i>
+            <span class="mouse">
+                <span class="wheel"></span>
+            </span>
         </a>
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="section">
+    <section id="skills" class="section modern-skills">
         <div class="container">
-            <h2 class="section-title">Skills</h2>
-            <p class="section-subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <div class="skill-icon"><i class="fa-brands fa-html5"></i></div>
-                    <h3>HTML / CSS</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
-                    </p>
+            <div class="section-header">
+                <h2 class="section-title">Skills</h2>
+                <div class="title-line"></div>
+            </div>
+
+            <div class="skills-list">
+                <div class="skill-row">
+                    <h3 class="skill-category">Backend & Logic</h3>
+                    <div class="skill-items">
+                        <div class="pill"><i class="fa-brands fa-php"></i> PHP</div>
+                        <div class="pill"><i class="fa-brands fa-node-js"></i> Node.js</div>
+                        <div class="pill"><i class="fa-brands fa-java"></i> Java SP</div>
+                    </div>
+                    <p class="skill-desc">영카트 기반 유지보수, 실시간 채팅 서비스 및 TensorFlow.js 등 고자원 연산 구현. Spring Boot REST API 서버
+                        구축.</p>
                 </div>
-                <div class="skill-card">
-                    <div class="skill-icon"><i class="fa-brands fa-js"></i></div>
-                    <h3>JavaScript</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
-                    </p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon"><i class="fa-brands fa-react"></i></div>
-                    <h3>React</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
-                    </p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon"><i class="fa-brands fa-node-js"></i></div>
-                    <h3>Node.js</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
-                    </p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon"><i class="fa-brands fa-git-alt"></i></div>
-                    <h3>Git</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
-                    </p>
-                </div>
-                <div class="skill-card">
-                    <div class="skill-icon"><i class="fa-solid fa-database"></i></div>
-                    <h3>Database</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
-                    </p>
+
+                <div class="skill-row">
+                    <h3 class="skill-category">Data & Tools</h3>
+                    <div class="skill-items">
+                        <div class="pill"><i class="fa-solid fa-database"></i> MariaDB</div>
+                        <div class="pill"><i class="fa-brands fa-git-alt"></i> Git</div>
+                        <div class="pill"><i class="fa-brands fa-unity"></i> Unity</div>
+                    </div>
+                    <p class="skill-desc">트랜잭션 기반 데이터 무결성 관리. 사내 NAS 서버 활용 Git 구축. Unity를 활용한 사내 AR 프로젝트 개발 참여.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="section section-alt">
+    <section id="projects" class="section section-alt modern-projects">
         <div class="container">
-            <h2 class="section-title">Projects</h2>
-            <p class="section-subtitle">드래그하여 회전하고, 클릭하여 프로젝트를 확인하세요.</p>
+            <div class="section-header text-center">
+                <h2 class="section-title">스터디 & 프로젝트 보기</h2>
+                <p class="section-subtitle">드래그하여 우주 유영하듯 스터디 & 프로젝트를 탐색해보세요.</p>
+            </div>
         </div>
         <div class="carousel-stage">
             <canvas id="carousel-canvas"></canvas>
@@ -135,46 +134,15 @@
     </div>
 
     <!-- Contact Section -->
-    <section id="contact" class="section">
+    <section id="contact" class="section modern-contact">
         <div class="container">
-            <h2 class="section-title">Contact</h2>
-            <p class="section-subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fa-solid fa-envelope"></i>
-                        <div>
-                            <h4>Email</h4>
-                            <p>lorem@ipsum.com</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fa-brands fa-github"></i>
-                        <div>
-                            <h4>GitHub</h4>
-                            <a href="https://github.com/lhs-devloper" target="_blank">github.com/lhs-devloper</a>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <div>
-                            <h4>Location</h4>
-                            <p>Seoul, South Korea</p>
-                        </div>
-                    </div>
-                </div>
-                <form class="contact-form" onsubmit="event.preventDefault();">
-                    <div class="form-group">
-                        <input type="text" placeholder="Name" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" placeholder="Email" required>
-                    </div>
-                    <div class="form-group">
-                        <textarea placeholder="Message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Send Message</button>
-                </form>
+            <div class="contact-cta">
+                <p class="contact-sup">Contact</p>
+                <h2 class="huge-text">Let's Work Together.</h2>
+                <p class="contact-desc">흥미로운 협업 제안이나, 개발의 즐거움을 나누며 함께 의미 있는 프로젝트를 만들어갈 분들의 연락을 언제나 환영합니다. 편하게 메일로 문의해 주세요.</p>
+                <a href="mailto:sdsd0114@naver.com" class="btn btn-primary btn-cta">
+                    이메일로 문의하기 <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
         </div>
     </section>

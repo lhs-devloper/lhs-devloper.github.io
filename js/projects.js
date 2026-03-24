@@ -185,8 +185,8 @@ class ProjectCarousel {
             ctx.arc(item.screenX, item.screenY, r, 0, PI2);
             ctx.closePath();
             ctx.strokeStyle = item.zIndex > 0.7
-                ? (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6c63ff')
-                : (getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#2a2a2a');
+                ? (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#a3c2f0')
+                : (getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#2d3748');
             ctx.lineWidth = item.zIndex > 0.7 ? 3 : 1.5;
             ctx.stroke();
         } else {
