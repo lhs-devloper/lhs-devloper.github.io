@@ -113,10 +113,10 @@ class ProjectCarousel {
         this.stageW = w;
         this.stageH = h;
         this.centerX = w / 2;
-        this.centerY = h * 0.48;
-        this.radiusX = w * 0.32;
-        this.radiusY = h * 0.12;
-        this.baseSize = Math.min(w, h) * 0.22;
+        this.centerY = h * 0.45;
+        this.radiusX = w * 0.35;
+        this.radiusY = h * 0.15;
+        this.baseSize = Math.min(w, h) * 0.6;
     }
 
     // --- 3D 위치 계산 ---
@@ -136,8 +136,10 @@ class ProjectCarousel {
 
             // sinA: -1(뒤) ~ +1(앞). 앞에 있을수록 크고 밝게
             const depth = (sinA + 1) / 2; // 0(뒤) ~ 1(앞)
-            item.scale = 0.5 + depth * 0.5;
-            item.opacity = 0.45 + depth * 0.55;
+            // ease-in 곡선으로 앞쪽이 급격히 커지는 효과
+            const eased = depth * depth;
+            item.scale = 0.35 + eased * 0.65;
+            item.opacity = 0.3 + depth * 0.7;
             item.zIndex = depth;
         });
     }
@@ -225,7 +227,7 @@ class ProjectCarousel {
 
             // 관성이 멈추면 시계방향 자동 회전
             if (this.velocity === 0) {
-                this.rotation += 0.002;
+                this.rotation += 0.004;
             }
         }
 

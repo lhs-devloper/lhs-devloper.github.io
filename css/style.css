@@ -318,12 +318,48 @@ img {
 .hero-socials-modern a {
     font-size: 1.5rem;
     color: var(--text-secondary);
-    transition: color 0.3s, transform 0.3s;
+    transform-origin: right center;
+    transition: color 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .hero-socials-modern a:hover {
     color: var(--accent);
-    transform: scale(1.1);
+    transform: scale(10);
+    z-index: 10;
+}
+
+/* 깃허브 윙크 영상 전환 애니메이션 */
+.github-link {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.github-link i {
+    position: relative;
+    z-index: 1;
+    transition: opacity 0.2s;
+}
+
+.github-hover-video {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.2s;
+    border-radius: 4px;
+}
+
+.github-link:hover i {
+    opacity: 0; /* 마우스를 올리면 기본 폰트 아이콘을 숨김 */
+}
+
+.github-link:hover .github-hover-video {
+    opacity: 1; /* 숨겨두었던 윙크 동작 영상을 나타냄 */
 }
 
 .scroll-indicator {
