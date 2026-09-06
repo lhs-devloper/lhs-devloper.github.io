@@ -212,18 +212,6 @@ img {
     overflow: hidden;
 }
 
-#hero-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    opacity: 0.3;
-}
-
-[data-theme="light"] #hero-canvas { opacity: 0.15; }
-
 .hero-container {
     position: relative;
     z-index: 1;
@@ -564,136 +552,35 @@ img {
     line-height: 1.7;
 }
 
-/* ===== Projects Carousel ===== */
-.carousel-stage {
+/* ===== Projects Letter Carousel ===== */
+.projects-stage {
+    position: relative;
     width: 100%;
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
-    aspect-ratio: 16 / 9;
+    /* 세로형 레터 카드가 들어가도록 가로보다 낮은 비율 */
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
     cursor: grab;
     -webkit-user-select: none;
     user-select: none;
     touch-action: pan-y;
 }
 
-.carousel-stage:active {
+.projects-stage:active {
     cursor: grabbing;
 }
 
-#carousel-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-/* ===== Project Modal ===== */
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-}
-
-.modal-backdrop.open {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    max-width: 560px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.3s;
-}
-
-.modal-backdrop.open .modal {
-    transform: scale(1) translateY(0);
-}
-
-.modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 10;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    font-size: 1rem;
+/* 카드 위에서는 클릭 가능함을 알린다 */
+.projects-stage.is-hot,
+.projects-stage.is-hot:active {
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s, border-color 0.2s;
 }
 
-.modal-close:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-}
-
-.modal-thumb-wrap {
-    width: 100%;
-    max-height: 320px;
-    overflow: hidden;
-    border-radius: 16px 16px 0 0;
-    background: var(--bg-secondary);
-}
-
-.modal-thumb-wrap img {
+#projects-canvas {
+    display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.modal-body {
-    padding: 28px;
-}
-
-.modal-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.modal-desc {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 20px;
-}
-
-.modal-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 24px;
-}
-
-.tag {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    background: var(--tag-bg);
-    color: var(--tag-text);
 }
 
 /* ===== Contact ===== */
@@ -761,7 +648,7 @@ img {
 .section-title,
 .section-subtitle,
 .skill-card,
-.carousel-stage,
+.projects-stage,
 .contact-item,
 .contact-form {
     opacity: 0;
@@ -806,8 +693,8 @@ img {
         gap: 16px;
     }
 
-    .carousel-stage {
-        aspect-ratio: 4 / 3;
+    .projects-stage {
+        aspect-ratio: 4 / 5;
     }
 
     .contact-content {

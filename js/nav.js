@@ -44,7 +44,7 @@
         });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.section-title, .section-subtitle, .skill-card, .carousel-stage, .contact-item, .contact-form').forEach(el => {
+    document.querySelectorAll('.section-title, .section-subtitle, .skill-card, .projects-stage, .contact-item, .contact-form').forEach(el => {
         observer.observe(el);
     });
 })();
