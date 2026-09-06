@@ -1,4 +1,5 @@
 import { LetterWheel } from "./letters.js";
+import { openAndGo } from "./page-transition.js";
 
 /* 이 거리 이상 끌면 클릭이 아니라 드래그로 본다 */
 const DRAG_THRESHOLD = 6;
@@ -156,8 +157,12 @@ export class LetterStage {
         if (this.wheel.focusIndex >= 0) {
             const hit = this.wheel.focusHitTest(p.x, p.y);
             if (hit === 'link') {
-                const project = this.wheel.projectAt(this.wheel.focusIndex);
-                if (project) window.open(project.link, '_blank', 'noopener');
+                const card = this.wheel.focusVisual();
+                if (card) {
+                    /* 스테이지 기준 좌표를 뷰포트 기준으로 옮겨 넘긴다 */
+                    const rect = this.canvas.getBoundingClientRect();
+                    openAndGo({ ...card, x: rect.left + card.x, y: rect.top + card.y });
+                }
             } else if (hit === 'close' || hit === 'outside') {
                 this.wheel.blur();
             }

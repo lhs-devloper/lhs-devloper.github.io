@@ -262,6 +262,31 @@ export class LetterWheel {
         return 'outside';
     }
 
+    /*
+     * 확대된 카드의 스테이지 기준 사각형과 색.
+     * 페이지 전환 연출이 이 자리에서 이어받는다.
+     */
+    focusVisual() {
+        if (this.focusIndex < 0 || !this.regions) return null;
+
+        const c = this.regions.card;
+        const project = this.projectAt(this.focusIndex);
+        if (!project) return null;
+
+        return {
+            x: c.x - c.w / 2,
+            y: c.y - c.h / 2,
+            w: c.w,
+            h: c.h,
+            radius: c.w * 0.03,
+            accent: this.accents[this.focusIndex],
+            paper: this.ui.paper,
+            titleColor: this.ui.title,
+            title: project.title,
+            link: project.link,
+        };
+    }
+
     /* 되감기 직전 구간에서 0으로 떨어지는 계수 */
     wrapFade(d) {
         const edge = this.items.length / 2;

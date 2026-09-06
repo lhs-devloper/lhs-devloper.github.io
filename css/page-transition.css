@@ -1,0 +1,138 @@
+/* ===== Page Transition =====
+ * 나가는 쪽: 확대된 레터가 책처럼 표지를 펼치고, 드러난 속지 안으로 빨려들어간다.
+ * 들어오는 쪽: 같은 색 판이 계속 다가오듯 커지며 걷혀 프로젝트가 드러난다.
+ */
+
+.page-cover {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    perspective: 1800px;
+    background: transparent;
+    transition: opacity 0.2s ease, background-color 0.42s ease 0.5s;
+}
+
+.page-cover.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* 카드 자리에 놓이는 책. 위치·크기는 JS가 인라인으로 넣는다 */
+.page-cover-book {
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 0.62s cubic-bezier(0.55, 0, 0.8, 0.1);
+}
+
+/* 펼치면 드러나는 속지 — 책장은 흰 종이다. 이 안으로 들어간다 */
+.page-cover-inside {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    border-radius: var(--cover-radius, 12px);
+    overflow: hidden;
+}
+
+/* 책등 쪽으로 지는 그늘 */
+.page-cover-inside::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 24%);
+}
+
+/* 표지 — 왼쪽 모서리를 축 삼아 열린다 */
+.page-cover-leaf {
+    position: absolute;
+    inset: 0;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 0.62s cubic-bezier(0.36, 0, 0.25, 1);
+}
+
+.page-cover.is-unfolding .page-cover-leaf {
+    transform: rotateY(-158deg);
+}
+
+.page-cover-face {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    backface-visibility: hidden;
+    border: 1px solid var(--cover-accent, #a78bfa);
+    border-radius: var(--cover-radius, 12px);
+    background: var(--cover-paper, #1c242d);
+}
+
+/* 앞면 — 레터 카드와 같은 모습 */
+.page-cover-face.is-front {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 카드 왼쪽의 프로젝트 색 띠 */
+.page-cover-face.is-front::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1.8%;
+    background: var(--cover-accent, #a78bfa);
+}
+
+/* 뒷면 — 넘어간 표지의 안쪽도 흰 종이 */
+.page-cover-face.is-back {
+    transform: rotateY(180deg);
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.12);
+    filter: brightness(0.93);
+}
+
+.page-cover-title {
+    color: var(--cover-title, #f0f4f8);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: var(--cover-font, 32px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-align: center;
+    padding: 0 12%;
+    line-height: 1.25;
+}
+
+/* 전환으로 들어온 페이지에서만 판이 걷힌다 (주소를 직접 열면 아무 일도 없음) */
+html.page-enter body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background: var(--page-enter-bg, #0f141a);
+    transform-origin: center center;
+    animation: page-enter-rush 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 다가오던 기세를 이어받아 계속 커지면서 걷힌다 */
+@keyframes page-enter-rush {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(1.6); visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-cover,
+    .page-cover-book,
+    .page-cover-leaf {
+        transition: none;
+    }
+
+    html.page-enter body::after {
+        animation: none;
+        display: none;
+    }
+}
