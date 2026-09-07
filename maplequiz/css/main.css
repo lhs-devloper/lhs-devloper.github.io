@@ -1,46 +1,462 @@
+/* ===== 메이플랜드 퀴즈 — 게임풍 테마 ===== */
+:root {
+    --wood-dark: #3a2415;
+    --wood: #6b4423;
+    --wood-light: #8a5a2f;
+    --parchment: #f6e8c8;
+    --parchment-2: #efdcb0;
+    --ink: #4a2f16;
+    --ink-soft: #7a5836;
+    --gold: #ffcf33;
+    --gold-deep: #e0a91c;
+    --orange: #f4a13b;
+    --orange-deep: #d97a17;
+    --green: #4caf50;
+    --green-deep: #2e7d32;
+    --red: #e04b4b;
+    --red-deep: #b23030;
+    --shadow: 0 8px 0 rgba(0, 0, 0, 0.28), 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    max-width: 100%;
-    background-color: black;
+    min-height: 100vh;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at 50% 0%, #4a3520 0%, #2a1c10 55%, #170f08 100%);
+    -webkit-font-smoothing: antialiased;
 }
 
-h1,
-h2,
-p {
-    color: white;
+.stage-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
 }
 
-.quiz {
+/* ===== 화면 ===== */
+.screen {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.is-hidden {
+    display: none !important;
+}
+
+/* ===== 나무 패널 ===== */
+.panel {
+    width: 100%;
+    max-width: 460px;
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+    border: 4px solid var(--wood);
+    border-radius: 20px;
+    box-shadow: var(--shadow), inset 0 0 0 3px rgba(255, 255, 255, 0.35);
+    padding: 26px 22px 22px;
     text-align: center;
+    position: relative;
 }
 
-input[type=text] {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 22px;
+.panel::before {
+    /* 패널 상단 금속 리벳 느낌의 얇은 띠 */
+    content: "";
+    position: absolute;
+    inset: 8px 8px auto 8px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
 }
 
-
-.ans {
-    font-weight: bold;
-    color: greenyellow;
+/* ===== 타이틀 ===== */
+.title {
+    font-size: 1.9rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--wood);
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6), 0 3px 2px rgba(0, 0, 0, 0.15);
 }
 
-button {
-    background-color: peru;
-    border-style: none;
+.lead {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+}
+
+/* ===== 시작 화면 규칙 ===== */
+.rules {
+    list-style: none;
+    margin: 20px auto;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rules li {
+    background: rgba(107, 68, 35, 0.1);
+    border: 2px solid rgba(107, 68, 35, 0.25);
     border-radius: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    margin: 5px 10px;
-    padding: 5px 20px;
-    color: white;
+    padding: 9px 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
 }
 
-
-button.skip {
-    background-color: red;
+.rules b {
+    color: var(--orange-deep);
+    font-weight: 900;
 }
 
-button.next {
-    background-color: blue;
+/* ===== 버튼 ===== */
+.btn {
+    display: inline-block;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fff;
+    padding: 12px 22px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+    transition: transform 0.08s ease, filter 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+    transform: translateY(2px);
+    filter: brightness(0.96);
+}
+
+/* 3D 느낌의 아랫 테두리 */
+.btn-primary {
+    background: linear-gradient(180deg, var(--orange) 0%, var(--orange-deep) 100%);
+    box-shadow: 0 4px 0 #a85c10, 0 6px 12px rgba(0, 0, 0, 0.35);
+}
+
+.btn-confirm {
+    background: linear-gradient(180deg, #5fbf63 0%, var(--green-deep) 100%);
+    box-shadow: 0 4px 0 #1f5c23, 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-skip {
+    background: linear-gradient(180deg, #b98d5e 0%, #8a5a2f 100%);
+    box-shadow: 0 4px 0 #5c3a1c, 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:active,
+.btn-confirm:active,
+.btn-skip:active {
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    padding: 15px;
+}
+
+/* 족보 보기 등 보조 버튼 — 우드 톤으로 채운 나무 버튼 (글자·크기는 시작하기와 동일) */
+.btn-outline {
+    position: relative;
+    background: linear-gradient(180deg, #e9d09a 0%, #d9b775 100%);
+    color: var(--wood);
+    border: 3px solid var(--wood);
+    box-shadow: 0 4px 0 rgba(58, 36, 21, 0.3), 0 6px 12px rgba(0, 0, 0, 0.25);
+    text-shadow: none;
+}
+
+/* 아이콘은 라벨 바로 옆에 붙여 한 덩어리로 가운데 정렬 */
+.btn-outline .btn-ico {
+    margin-right: 6px;
+    font-size: 1.1rem;
+}
+
+.btn-outline:active {
+    box-shadow: 0 2px 0 rgba(58, 36, 21, 0.35);
+}
+
+.btn-ghost {
+    background: none;
+    color: var(--ink-soft);
+    box-shadow: none;
+    text-shadow: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    margin-top: 14px;
+    padding: 6px;
+}
+
+.btn-ghost:active {
+    transform: none;
+}
+
+/* ===== HUD (진행/점수) ===== */
+.hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 800;
+}
+
+.hud-progress {
+    font-size: 1.05rem;
+    color: var(--wood);
+}
+
+.hud-score {
+    font-size: 1rem;
+    color: var(--ink);
+}
+
+.hud-score b {
+    color: var(--gold-deep);
+    font-size: 1.15rem;
+}
+
+/* ===== 타이머 바 ===== */
+.timerbar {
+    position: relative;
+    height: 24px;
+    background: rgba(58, 36, 21, 0.25);
+    border: 2px solid var(--wood);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.timerbar-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 100%;
+    background: linear-gradient(180deg, #7ed07f 0%, var(--green) 100%);
+    border-radius: 999px;
+    transition: width 1s linear, background 0.3s ease;
+}
+
+.timerbar-fill.is-low {
+    background: linear-gradient(180deg, #ef6b6b 0%, var(--red-deep) 100%);
+    animation: pulse 0.7s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    50% { opacity: 0.7; }
+}
+
+.timerbar-text {
+    position: relative;
+    z-index: 1;
+    display: block;
+    line-height: 24px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== 이미지 무대 ===== */
+.stage {
+    background: #fffdf7;
+    border: 3px solid var(--wood);
+    border-radius: 16px;
+    box-shadow: inset 0 2px 8px rgba(58, 36, 21, 0.2);
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.npc-img {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    margin: 0 auto;
+    image-rendering: pixelated;
+}
+
+/* ===== 입력 ===== */
+.answer-input {
+    width: 100%;
+    padding: 13px 18px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--ink);
+    background: #fffdf7;
+    border: 3px solid var(--wood-light);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.answer-input:focus {
+    border-color: var(--gold-deep);
+    box-shadow: 0 0 0 4px rgba(255, 207, 51, 0.35);
+}
+
+/* ===== 액션 버튼 줄 ===== */
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.actions .btn {
+    flex: 1;
+}
+
+/* ===== 결과 화면 ===== */
+.result-score {
+    margin-top: 12px;
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--wood);
+    letter-spacing: 1px;
+}
+
+.result-score b {
+    color: var(--orange-deep);
+}
+
+.result-slash {
+    margin: 0 6px;
+    color: var(--ink-soft);
+}
+
+.result-msg {
+    margin-top: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+}
+
+.result-list {
+    margin: 18px 0;
+    max-height: 46vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 4px;
+    text-align: left;
+}
+
+.result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+}
+
+.result-item.is-correct {
+    background: rgba(76, 175, 80, 0.14);
+    border-color: rgba(46, 125, 50, 0.4);
+}
+
+.result-item.is-wrong {
+    background: rgba(224, 75, 75, 0.12);
+    border-color: rgba(178, 48, 48, 0.4);
+}
+
+.ri-no {
+    flex: 0 0 22px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--ink-soft);
+}
+
+.ri-thumb {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    background: #fffdf7;
+    border: 2px solid var(--wood-light);
+    border-radius: 8px;
+}
+
+.ri-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.ri-name {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ri-your {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ri-mark {
+    flex: 0 0 auto;
+    font-size: 1.3rem;
+    font-weight: 900;
+}
+
+.is-correct .ri-mark {
+    color: var(--green-deep);
+}
+
+.is-wrong .ri-mark {
+    color: var(--red-deep);
+}
+
+/* 스크롤바 */
+.result-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.result-list::-webkit-scrollbar-thumb {
+    background: var(--wood-light);
+    border-radius: 4px;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 480px) {
+    .panel {
+        padding: 20px 16px 18px;
+    }
+
+    .title {
+        font-size: 1.6rem;
+    }
+
+    .npc-img {
+        max-width: 220px;
+    }
+
+    .answer-input {
+        font-size: 1.05rem;
+    }
 }

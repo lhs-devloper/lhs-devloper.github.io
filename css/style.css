@@ -680,12 +680,16 @@ img {
         gap: 20px;
         border-bottom: 1px solid var(--border);
         transform: translateY(-120%);
-        transition: transform 0.3s;
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.3s, opacity 0.3s;
         z-index: 999;
     }
 
     .nav-menu.open {
         transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
     }
 
     .skills-grid {
@@ -702,8 +706,20 @@ img {
         gap: 32px;
     }
 
+    /* 모바일: 각 섹션이 서로 뚜렷하게 떨어져 보이도록 간격 확보 */
     .section {
-        padding: 72px 0;
+        padding: 100px 0;
+    }
+
+    .modern-contact {
+        padding: 110px 0;
+    }
+
+    /* 섹션 사이 구분선으로 시각적 분리 강화 */
+    .modern-skills,
+    .modern-projects,
+    .modern-contact {
+        border-top: 1px solid var(--border);
     }
 }
 
@@ -718,32 +734,380 @@ img {
     }
 }
 
-/* ===== Sound Page Styles (preserved) ===== */
-.button {
-    background-color: var(--bg-primary, rgb(2, 2, 2));
-    width: 3%;
+/* ===== Interactive Sound Page ===== */
+.sound-page {
+    min-height: 100vh;
+    padding: 104px 24px 48px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    gap: 32px;
+    background:
+        radial-gradient(circle at 20% 0%, var(--accent-glow), transparent 45%),
+        radial-gradient(circle at 85% 100%, var(--accent-glow), transparent 45%);
 }
 
-.sound {
+.sound-intro {
+    text-align: center;
+    max-width: 560px;
+}
+
+.sound-eyebrow {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.sound-heading {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.sound-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* ---- Player Card ---- */
+.player-card {
     width: 100%;
-    height: 15%;
+    max-width: 520px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: var(--shadow-hover);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 22px;
 }
 
-.soundWave {
-    width: 94%;
+.player-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.player-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--tag-text);
+    background: var(--tag-bg);
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+.player-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.player-count {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.player-meta {
+    text-align: center;
+}
+
+.track-title {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.track-sub {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* ---- Visualizer ---- */
+.visualizer {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    border-radius: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.visualizer .wave {
+    display: block;
+    width: 100%;
     height: 100%;
 }
 
-.sound-ui {
+.visualizer-hint {
+    position: absolute;
+    inset: 0;
     display: flex;
-    justify-content: end;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: color-mix(in srgb, var(--bg-secondary) 70%, transparent);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
 }
 
-.material-symbols-outlined {
-    color: rgb(50, 50, 200);
+.visualizer-hint .material-symbols-outlined {
+    font-size: 3rem;
+    color: var(--accent);
+}
+
+.visualizer-hint.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---- Controls ---- */
+.player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.ctrl-btn {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.2s, background 0.2s;
+}
+
+.ctrl-btn:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.ctrl-btn:active {
+    transform: scale(0.94);
+}
+
+.ctrl-btn .material-symbols-outlined {
+    color: var(--text-primary);
+    font-size: 1.6rem;
+}
+
+.ctrl-play {
+    width: 72px;
+    height: 72px;
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.ctrl-play .material-symbols-outlined {
+    color: #fff;
+    font-size: 2.2rem;
+}
+
+.ctrl-play:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.ctrl-play.is-playing {
+    animation: play-glow 2s ease-in-out infinite;
+}
+
+@keyframes play-glow {
+    0%, 100% { box-shadow: 0 8px 24px var(--accent-glow); }
+    50% { box-shadow: 0 8px 34px var(--accent-glow), 0 0 0 6px var(--accent-glow); }
+}
+
+/* ---- Volume ---- */
+.player-volume {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.player-volume .material-symbols-outlined {
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+}
+
+.player-volume input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--border);
+    cursor: pointer;
+    outline: none;
+}
+
+.player-volume input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-card);
+    box-shadow: 0 2px 6px var(--accent-glow);
+}
+
+.player-volume input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-card);
+}
+
+/* ---- Playlist ---- */
+.playlist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.playlist-item:hover {
+    background: var(--bg-card-hover);
+}
+
+.playlist-item.active {
+    background: var(--tag-bg);
+}
+
+.playlist-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    width: 20px;
+}
+
+.playlist-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.playlist-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.playlist-mood {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.playlist-icon {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.playlist-item.active .playlist-icon {
+    opacity: 1;
+    color: var(--accent);
+}
+
+/* ---- Sound Footer (clock) ---- */
+.sound-footer {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.sound-footer .material-symbols-outlined {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .sound-page {
+        padding: 88px 16px 40px;
+        gap: 24px;
+    }
+
+    .player-card {
+        padding: 20px;
+        border-radius: 20px;
+        gap: 18px;
+    }
+
+    .visualizer {
+        height: 150px;
+    }
+
+    .track-title {
+        font-size: 1.4rem;
+    }
+
+    .player-controls {
+        gap: 18px;
+    }
+
+    .ctrl-btn {
+        width: 48px;
+        height: 48px;
+    }
+
+    .ctrl-play {
+        width: 64px;
+        height: 64px;
+    }
 }

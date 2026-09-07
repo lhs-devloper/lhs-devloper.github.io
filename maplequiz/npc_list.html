@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="https://unpkg.com/mvp.css">  -->
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/answer.css">
-    <title>Document</title>
+    <title>NPC 족보 | 메이플랜드 퀴즈</title>
 </head>
 
 <body>
-    <div>
-        <div>
-            <div class="header">
-                <h1 style="text-align: center;">NPC 족보</h1>
-                <!-- <input type="text" placeholder="복붙 확인"> -->
-            </div>
+    <header class="jokbo-bar">
+        <div class="jokbo-top">
+            <a class="jokbo-back" href="./index.html">← 퀴즈로</a>
+            <h1 class="jokbo-title">NPC 족보</h1>
+        </div>
+        <input type="search" id="jokbo-search" class="jokbo-search" placeholder="이름으로 검색 (카드를 누르면 복사돼요)" autocomplete="off">
+    </header>
 
-            <div class="contents">
+    <div class="contents">
+        <p class="jokbo-empty" id="jokbo-empty">검색 결과가 없어요</p>
                 <div class="viliage">
                     <h2>헤네시스</h2>
                 </div>
@@ -795,22 +796,62 @@
                     
                 </div>
             </div>
-        </div>
-    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 <script>
-    const imgList = document.getElementsByTagName("img");
+    const search = document.getElementById("jokbo-search");
+    const toast = document.getElementById("toast");
+    const emptyMsg = document.getElementById("jokbo-empty");
+    const groups = Array.from(document.querySelectorAll(".npc_list"));
 
-    Array.prototype.forEach.call(imgList, img => {
-        img.addEventListener("click", (e) => {
-            const imgName = e.target.alt;
-            navigator.clipboard.writeText(imgName).then(() => {
-                alert(imgName + " 복사되었습니다");
-            }).catch(err => {
-                alert("복사 실패: " + err);
+    /* 복사 알림 토스트 (alert 대신 non-blocking) */
+    let toastTimer = null;
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    /* 카드 클릭 → 이름 클립보드 복사 */
+    document.querySelectorAll(".npc").forEach(card => {
+        card.addEventListener("click", () => {
+            const name = card.querySelector("p").textContent.trim();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(name)
+                    .then(() => showToast(`"${name}" 복사됨`))
+                    .catch(() => showToast("복사할 수 없어요"));
+            } else {
+                showToast("복사할 수 없어요");
+            }
+        });
+    });
+
+    /* 이름 검색 필터 — 공백/대소문자 무시, 빈 마을 헤더는 숨김 */
+    const normalize = (s) => s.replace(/\s+/g, "").toLowerCase();
+    search.addEventListener("input", () => {
+        const q = normalize(search.value);
+        let totalVisible = 0;
+
+        groups.forEach(group => {
+            let visible = 0;
+            group.querySelectorAll(".npc").forEach(card => {
+                const name = normalize(card.querySelector("p").textContent);
+                const match = !q || name.includes(q);
+                card.style.display = match ? "" : "none";
+                if (match) visible++;
             });
-        })
-    })
+            totalVisible += visible;
+
+            const header = group.previousElementSibling;
+            if (header && header.classList.contains("viliage")) {
+                header.style.display = visible ? "" : "none";
+            }
+        });
+
+        emptyMsg.style.display = totalVisible ? "none" : "block";
+    });
 </script>
 
 </html>

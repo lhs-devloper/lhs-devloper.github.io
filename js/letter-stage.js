@@ -35,6 +35,7 @@ export class LetterStage {
         /* 테마 토글 → 종이·글자·강조색도 함께 전환 */
         new MutationObserver(() => {
             this.wheel.setTheme(document.documentElement.getAttribute('data-theme'));
+            this.dirty = true;
         }).observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['data-theme'],
@@ -61,20 +62,23 @@ export class LetterStage {
 
         /* 휠은 다시 만들지 않으므로 현재 위치가 그대로 유지된다 */
         this.wheel.resize(this.stageWidth, this.stageHeight);
+        /* 레이아웃이 바뀌었으니 최소 한 프레임은 다시 그린다 */
+        this.dirty = true;
     }
 
     animate() {
         window.requestAnimationFrame(this.animate.bind(this));
-        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 
         this.moveX *= this.friction;
+        /* 아주 미세한 관성은 0으로 끊어 불필요한 재렌더를 막는다 */
+        if (Math.abs(this.moveX) < 0.05) this.moveX = 0;
 
         /*
          * 손을 떼고 관성도 멎었을 때:
          * 좁은 화면은 가장 가까운 카드로 정렬하고,
          * 넓은 화면은 아주 천천히 혼자 흐른다. 카드를 겨냥하는 중엔 멈춘다.
          */
-        const idle = !this.isDown && Math.abs(this.moveX) < 0.05;
+        const idle = !this.isDown && this.moveX === 0;
         if (idle && this.wheel.focusIndex < 0) {
             if (this.wheel.narrow) {
                 this.wheel.settle();
@@ -83,7 +87,29 @@ export class LetterStage {
             }
         }
 
+        /*
+         * 움직임이 완전히 멎은 프레임은 다시 그리지 않는다.
+         * 정지한 캔버스를 매 프레임 새로 칠하면 페이지 스크롤까지 끊긴다.
+         */
+        if (!this.dirty && !this.needsFrame()) return;
+        this.dirty = false;
+
+        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
         this.wheel.animate(this.ctx, this.moveX);
+    }
+
+    /* 아직 화면이 변할 여지가 있는가 (없으면 이 프레임은 건너뛴다) */
+    needsFrame() {
+        const w = this.wheel;
+        if (this.isDown || this.moveX !== 0) return true;
+        /* 확대 카드가 떠 있거나 여닫는 중 */
+        if (w.focusIndex >= 0 || w.focusT !== 0) return true;
+        /* 호버로 떠오른 카드가 있거나 아직 가라앉는 중 */
+        if (w.hoverIndex >= 0 || w.lift.some((v) => v > 0.0001)) return true;
+        /* 좁은 화면: 가장 가까운 카드로 정렬이 끝나지 않았으면 계속 */
+        if (w.narrow) return w.offset !== Math.round(w.offset);
+        /* 넓은 화면은 자동으로 천천히 흐른다 */
+        return !!this.autoSpin;
     }
 
     /* 포인터의 캔버스 기준 좌표와 영역 안 여부 */
@@ -130,6 +156,7 @@ export class LetterStage {
         this.moveX = 0;
         this.offsetX = e.clientX;
         this.dragDelta = 0;
+        this.dirty = true;
     }
 
     onMove(e) {
@@ -139,6 +166,8 @@ export class LetterStage {
             this.dragDelta += Math.abs(dx);
             /* 확대 중에는 끌어도 휠이 돌지 않는다 */
             this.moveX = this.wheel.focusIndex >= 0 ? 0 : dx;
+            /* 드래그 중 호버 판정은 의미가 없다 — 매 이동마다의 좌표 계산을 건너뛴다 */
+            return;
         }
         this.updateHover(e);
     }
@@ -146,6 +175,7 @@ export class LetterStage {
     onUp(e) {
         if (!this.isDown) return;
         this.isDown = false;
+        this.dirty = true;
 
         /* 거의 안 움직였을 때만 클릭으로 본다 */
         if (this.dragDelta >= DRAG_THRESHOLD) return;

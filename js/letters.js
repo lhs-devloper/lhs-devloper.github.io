@@ -178,6 +178,8 @@ export class LetterWheel {
 
     setTheme(theme) {
         this.theme = theme === 'light' ? 'light' : 'dark';
+        /* 색이 바뀌므로 미리 구워둔 앞면 캐시를 버린다 */
+        this.faces = null;
         /* 프로젝트 순서대로 강조색을 하나씩 배정한다 */
         const accents = THEME_ACCENTS[this.theme];
         this.accents = this.items.map((_, i) => accents[i % accents.length]);
@@ -437,6 +439,175 @@ export class LetterWheel {
         const reach = (b.w + b.h) / 2;
         if (b.x + reach < 0 || b.x - reach > this.stageWidth) return;
 
+        /*
+         * 회전 중인 일반 카드는 미리 구워둔 앞면 비트맵을 얹기만 한다.
+         * 텍스트 레이아웃(measureText·줄바꿈)은 카드당 한 번이면 되므로
+         * 매 프레임 다시 그리던 비용이 사라진다.
+         * 호버·확대 중인 카드만 강조 테두리·닫기 버튼까지 정밀하게 그린다.
+         */
+        const emphasis = Math.max(this.lift[i], i === this.focusIndex ? this.focusT : 0);
+        if (emphasis <= 0.02) {
+            this.drawCardCached(ctx, i, b);
+            return;
+        }
+        this.drawCardLive(ctx, i, b, project, emphasis);
+    }
+
+    /* 회전 중인 카드: 캐시된 앞면 + 그림자만 합성한다 (drawImage 한 번) */
+    drawCardCached(ctx, i, b) {
+        const face = this.faceBitmap(i);
+        if (!face) return;
+        const blurScale = this.narrow ? 0.55 : 1;
+        ctx.save();
+        ctx.globalAlpha = b.alpha;
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.angle);
+        ctx.shadowColor = this.ui.shadow;
+        ctx.shadowBlur = b.w * 0.09 * blurScale;
+        ctx.shadowOffsetY = b.w * 0.02 * blurScale;
+        ctx.drawImage(face, -b.w / 2, -b.h / 2, b.w, b.h);
+        ctx.restore();
+    }
+
+    /* 카드 앞면을 오프스크린에 한 번만 그려 재사용한다 (크기·테마가 바뀌면 다시 굽는다) */
+    faceBitmap(i) {
+        if (!this.faces) this.faces = [];
+        const cached = this.faces[i];
+        if (cached && cached.w === this.cardW && cached.h === this.cardH) return cached.canvas;
+
+        const res = Math.min(2, window.devicePixelRatio || 1);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(this.cardW * res));
+        canvas.height = Math.max(1, Math.round(this.cardH * res));
+        const fctx = canvas.getContext('2d');
+        fctx.setTransform(res, 0, 0, res, 0, 0);
+        this.renderFace(fctx, i, this.cardW, this.cardH);
+        this.faces[i] = { canvas, w: this.cardW, h: this.cardH };
+        return canvas;
+    }
+
+    /* (0,0)-(w,h)에 카드 앞면을 그린다 — 기울기·그림자·강조·닫기 버튼은 포함하지 않는다 */
+    renderFace(ctx, i, w, h) {
+        const project = this.projectAt(i);
+        if (!project) return;
+        const accent = this.accents[i] || this.ui.border;
+        const pad = w * PAD;
+        const inner = w - pad * 2;
+        const radius = w * 0.03;
+
+        /* 종이 */
+        roundRect(ctx, 0, 0, w, h, radius);
+        ctx.fillStyle = this.ui.paper;
+        ctx.fill();
+
+        /* 왼쪽 가장자리 색 띠 */
+        ctx.save();
+        roundRect(ctx, 0, 0, w, h, radius);
+        ctx.clip();
+        ctx.fillStyle = accent;
+        ctx.fillRect(0, 0, w * 0.018, h);
+        ctx.restore();
+
+        /* 테두리 */
+        roundRect(ctx, 0, 0, w, h, radius);
+        ctx.strokeStyle = this.ui.border;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        /* 종이 밖으로 글자가 새지 않게 */
+        ctx.save();
+        roundRect(ctx, 0, 0, w, h, radius);
+        ctx.clip();
+
+        let cursor = pad;
+
+        const headSize = Math.max(MIN_HEAD, w * FONT_HEAD);
+        ctx.font = `600 ${headSize}px ${FAMILY}`;
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = this.ui.muted;
+        ctx.textAlign = 'left';
+        ctx.fillText('LHS © 2026', pad, cursor);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = accent;
+        ctx.fillText(`No. ${String(i + 1).padStart(2, '0')}`, w - pad, cursor);
+        cursor += headSize * 1.6;
+
+        ctx.beginPath();
+        ctx.moveTo(pad, Math.round(cursor) + 0.5);
+        ctx.lineTo(w - pad, Math.round(cursor) + 0.5);
+        ctx.strokeStyle = rgba(accent, 0.55);
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        cursor += h * 0.07;
+
+        const titleSize = Math.max(MIN_TITLE, w * FONT_TITLE);
+        ctx.textAlign = 'left';
+        ctx.font = `800 ${titleSize}px ${FAMILY}`;
+        ctx.fillStyle = this.ui.title;
+        for (const line of wrapText(ctx, project.title, inner, 2)) {
+            ctx.fillText(line, pad, cursor);
+            cursor += titleSize * 1.28;
+        }
+        cursor += h * 0.028;
+
+        const bodySize = Math.max(MIN_BODY, w * FONT_BODY);
+        ctx.font = `400 ${bodySize}px ${FAMILY}`;
+        ctx.fillStyle = this.ui.body;
+        for (const line of wrapText(ctx, project.desc, inner, 6)) {
+            ctx.fillText(line, pad, cursor);
+            cursor += bodySize * 1.7;
+        }
+
+        const footSize = Math.max(MIN_FOOT, w * FONT_FOOT);
+        const tagSize = Math.max(MIN_TAG, w * FONT_TAG);
+        const chipH = tagSize * 2.1;
+        const tagsY = h - pad - footSize * 1.9 - chipH;
+
+        const signSize = footSize;
+        const signY = tagsY - signSize * 3.1;
+        if (signY > cursor) {
+            ctx.textAlign = 'right';
+            ctx.font = `400 ${signSize}px ${FAMILY}`;
+            ctx.fillStyle = this.ui.muted;
+            ctx.fillText('Hyeonseo Lee', w - pad, signY + signSize * 0.5);
+
+            ctx.beginPath();
+            ctx.moveTo(w - pad - signSize * 6, Math.round(signY) + 0.5);
+            ctx.lineTo(w - pad, Math.round(signY) + 0.5);
+            ctx.strokeStyle = this.ui.border;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.textAlign = 'left';
+        }
+
+        ctx.font = `600 ${tagSize}px ${FAMILY}`;
+        let chipX = pad;
+        for (const tag of project.tags || []) {
+            const chipW = ctx.measureText(tag).width + tagSize * 1.5;
+            if (chipX + chipW > w - pad) break;
+
+            roundRect(ctx, chipX, tagsY, chipW, chipH, chipH / 2);
+            ctx.fillStyle = rgba(accent, 0.16);
+            ctx.fill();
+
+            ctx.fillStyle = accent;
+            ctx.textBaseline = 'middle';
+            ctx.fillText(tag, chipX + tagSize * 0.75, tagsY + chipH / 2 + 0.5);
+            ctx.textBaseline = 'top';
+
+            chipX += chipW + tagSize * 0.5;
+        }
+
+        const linkText = 'View Project  →';
+        ctx.font = `700 ${footSize}px ${FAMILY}`;
+        ctx.fillStyle = accent;
+        ctx.fillText(linkText, pad, h - pad - footSize);
+
+        ctx.restore();
+    }
+
+    /* 호버·확대 카드: 강조 테두리·닫기 버튼까지 매 프레임 정밀하게 그린다 */
+    drawCardLive(ctx, i, b, project, emphasis) {
         const accent = this.accents[i] || this.ui.border;
         /* 카드 중심으로 옮겨 기울인 뒤, 내용은 카드 기준 좌표로 그린다 */
         const x = -b.w / 2;
@@ -450,10 +621,11 @@ export class LetterWheel {
         ctx.translate(b.x, b.y);
         ctx.rotate(b.angle);
 
-        /* 종이 */
+        /* 종이 — 모바일에서는 그림자 블러를 줄여 스와이프 부담을 던다 */
+        const blurScale = this.narrow ? 0.55 : 1;
         ctx.shadowColor = this.ui.shadow;
-        ctx.shadowBlur = b.w * (0.09 + this.lift[i] * 0.06);
-        ctx.shadowOffsetY = b.w * (0.02 + this.lift[i] * 0.03);
+        ctx.shadowBlur = b.w * (0.09 + this.lift[i] * 0.06) * blurScale;
+        ctx.shadowOffsetY = b.w * (0.02 + this.lift[i] * 0.03) * blurScale;
         roundRect(ctx, x, y, b.w, b.h, radius);
         ctx.fillStyle = this.ui.paper;
         ctx.fill();
@@ -471,7 +643,6 @@ export class LetterWheel {
 
         /* 테두리 — 호버 중이면 프로젝트 색으로 */
         roundRect(ctx, x, y, b.w, b.h, radius);
-        const emphasis = Math.max(this.lift[i], i === this.focusIndex ? this.focusT : 0);
         ctx.strokeStyle = emphasis > 0.02 ? accent : this.ui.border;
         ctx.lineWidth = 1 + emphasis * 1.4;
         ctx.stroke();

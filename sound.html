@@ -1,63 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Interactive Sound | LHS</title>
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="./css/page-transition.css">
     <script src="./js/page-enter.js"></script>
 </head>
-<body>
-    <!-- <button>prev</button>
-    <button>next</button> -->
-    <header>
-        <div class="header">
-            <h2>
-                😁 Hello Welcome My Github Site
-            </h2>
-            <navbar>
-                <ul>
-                    <li>
-    
-                    </li>
-                </ul>
-            </navbar>
-        </div>
-    </header>
-    
-    <div class="sound">
-        <div class="prev button" id="prev">
-            <span class="material-symbols-outlined">
-                arrow_back_ios
-            </span>
-        </div>
-        <div class="soundWave" id="soundWave"></div>
-        <div class="button" id="next">
-            <span class="material-symbols-outlined">
-                arrow_forward_ios
-            </span>
-        </div>
-    </div>
-    <script src="./js/SoundWave/soundwave.js" type="module"></script>  
-    <div class="sound-ui">
-        <span class="material-symbols-outlined" id="state"></span>
-        <span class="material-symbols-outlined">
-            volume_up
-        </span>
-        <input type="range" min="0" max="1" step="0.1" id="soundVolume">
-    </div>
-    <div>
 
-    </div>
-    <footer>
-        <div class="footer">
-            <h2 id="clock"></h2>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                LHS <span class="logo-sub">&copy; 2026</span>
+            </a>
+            <button class="nav-toggle" aria-label="메뉴 열기">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html#hero" class="nav-link">Home</a></li>
+                <li><a href="index.html#skills" class="nav-link">Skills</a></li>
+                <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+                <li><a href="sound.html" class="nav-link active">Sound</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="테마 변경">
+                <i class="fa-solid fa-moon"></i>
+                <i class="fa-solid fa-sun"></i>
+            </button>
         </div>
-        <script src="./js/clock.js"></script>
-    </footer>
+    </nav>
+
+    <!-- Interactive Sound Player -->
+    <main class="sound-page">
+        <div class="sound-intro">
+            <p class="sound-eyebrow">Interactive Sound</p>
+            <h1 class="sound-heading">Feel the frequency</h1>
+            <p class="sound-desc">Web Audio API로 만든 실시간 오디오 비주얼라이저. 트랙을 재생하고 소리가 그려지는 파형을 감상해보세요.</p>
+        </div>
+
+        <div class="player-card">
+            <div class="player-top">
+                <span class="player-badge">
+                    <span class="player-dot"></span> NOW PLAYING
+                </span>
+                <span class="player-count" id="trackCount">1 / 4</span>
+            </div>
+
+            <div class="player-meta">
+                <h2 class="track-title" id="trackTitle">Ellinia</h2>
+                <p class="track-sub" id="trackSub">Ambient · Loop</p>
+            </div>
+
+            <div class="visualizer" id="soundWave">
+                <button class="visualizer-hint" id="visualizerHint" type="button">
+                    <span class="material-symbols-outlined">play_circle</span>
+                    <span>탭하여 재생</span>
+                </button>
+            </div>
+
+            <div class="player-controls">
+                <button class="ctrl-btn" id="prev" aria-label="이전 트랙">
+                    <span class="material-symbols-outlined">skip_previous</span>
+                </button>
+                <button class="ctrl-btn ctrl-play" id="playToggle" aria-label="재생 / 일시정지">
+                    <span class="material-symbols-outlined" id="state">play_arrow</span>
+                </button>
+                <button class="ctrl-btn" id="next" aria-label="다음 트랙">
+                    <span class="material-symbols-outlined">skip_next</span>
+                </button>
+            </div>
+
+            <div class="player-volume">
+                <span class="material-symbols-outlined" id="volumeIcon">volume_up</span>
+                <input type="range" min="0" max="1" step="0.01" value="0.5" id="soundVolume" aria-label="볼륨">
+            </div>
+
+            <ul class="playlist" id="playlist"></ul>
+        </div>
+
+        <footer class="sound-footer">
+            <span class="material-symbols-outlined">schedule</span>
+            <span id="clock"></span>
+        </footer>
+    </main>
+
+    <script src="./js/SoundWave/soundwave.js" type="module"></script>
+    <script src="./js/clock.js"></script>
+    <script src="./js/theme.js"></script>
+    <script src="./js/nav.js"></script>
 </body>
+
 </html>

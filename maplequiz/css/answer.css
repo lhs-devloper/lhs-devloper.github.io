@@ -1,25 +1,191 @@
-.npc_list{
+/* ===== NPC 족보 (npc_list.html) — 메이플 테마 ===== */
+/* 색 변수는 main.css :root 에서 가져온다 */
+
+.jokbo-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+    border-bottom: 4px solid var(--wood);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-.npc_list img{
-    cursor: pointer;
-    width: 150px;
-    height: 150px;
-    margin: 20px;
+.jokbo-top {
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.npc{
-    display: block;
-    text-align: center;
-    border: solid white;
+.jokbo-back {
+    text-decoration: none;
+    font-weight: 800;
+    color: var(--wood);
+    background: rgba(107, 68, 35, 0.1);
+    border: 2px solid var(--wood);
     border-radius: 10px;
-    margin: 50px;
+    padding: 8px 14px;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.npc p{
-    color: white;
-    font-size: 20px;
+.jokbo-back:active {
+    transform: translateY(1px);
+}
+
+.jokbo-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--wood);
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+.jokbo-search {
+    width: 100%;
+    max-width: 960px;
+    padding: 11px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: #fffdf7;
+    border: 3px solid var(--wood-light);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.jokbo-search:focus {
+    border-color: var(--gold-deep);
+    box-shadow: 0 0 0 4px rgba(255, 207, 51, 0.3);
+}
+
+/* ===== 본문 ===== */
+.contents {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 18px 16px 60px;
+}
+
+.viliage {
+    margin: 26px 0 12px;
+}
+
+.viliage h2 {
+    display: inline-block;
+    color: var(--parchment);
+    background: var(--wood);
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    box-shadow: 0 3px 0 rgba(58, 36, 21, 0.4);
+}
+
+/* ===== NPC 카드 그리드 ===== */
+.npc_list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 12px;
+}
+
+.npc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 10px 6px;
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+    border: 3px solid var(--wood);
+    border-radius: 14px;
+    box-shadow: 0 3px 0 rgba(58, 36, 21, 0.25);
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.npc:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 rgba(58, 36, 21, 0.25);
+}
+
+.npc:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 0 rgba(58, 36, 21, 0.3);
+}
+
+.npc img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    margin: 0;
+    cursor: pointer;
+}
+
+.npc p {
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-align: center;
+    word-break: keep-all;
+}
+
+/* 검색 결과 없음 안내 */
+.jokbo-empty {
+    text-align: center;
+    color: var(--parchment);
     font-weight: 700;
+    padding: 40px 0;
+    display: none;
+}
+
+/* ===== 복사 토스트 ===== */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 20px);
+    background: var(--wood-dark);
+    color: var(--parchment);
+    font-weight: 800;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 2px solid var(--gold-deep);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 50;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+@media (max-width: 480px) {
+    .npc_list {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+    }
+
+    .npc img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .npc p {
+        font-size: 0.82rem;
+    }
+
+    .jokbo-title {
+        font-size: 1.15rem;
+    }
 }

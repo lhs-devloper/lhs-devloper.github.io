@@ -1,126 +1,219 @@
 class Soundwave {
     constructor() {
-        this.canvas = document.createElement("canvas");
-        this.canvas.classList.add('wave')
-        this.ctx = this.canvas.getContext("2d");
-        this.audioList = [
-            '../sound/ellinia.mp3',
-            '../sound/speed.mp3',
-            '../sound/eclipse.mp3',
-            '../sound/candyland.mp3',
-        ]
+        this.tracks = [
+            { src: '../sound/ellinia.mp3', title: 'Ellinia', mood: 'Ambient · Loop' },
+            { src: '../sound/speed.mp3', title: 'Speed', mood: 'Energetic · Loop' },
+            { src: '../sound/eclipse.mp3', title: 'Eclipse', mood: 'Dark · Loop' },
+            { src: '../sound/candyland.mp3', title: 'Candyland', mood: 'Playful · Loop' },
+        ];
         this.beingMusic = 0;
-        this.audio = document.createElement("audio");
-        this.audio.src = this.audioList[this.beingMusic];
-        this.audio.autoplay = true;
+
+        // ----- DOM -----
+        this.target = document.getElementById('soundWave');
+        this.hint = document.getElementById('visualizerHint');
+        this.volumeController = document.getElementById('soundVolume');
+        this.stateIcon = document.getElementById('state');
+        this.playToggle = document.getElementById('playToggle');
+        this.prevTag = document.getElementById('prev');
+        this.nextTag = document.getElementById('next');
+        this.trackTitle = document.getElementById('trackTitle');
+        this.trackSub = document.getElementById('trackSub');
+        this.trackCount = document.getElementById('trackCount');
+        this.volumeIcon = document.getElementById('volumeIcon');
+        this.playlistEl = document.getElementById('playlist');
+
+        // ----- Audio -----
+        this.audio = document.createElement('audio');
+        this.audio.src = this.tracks[this.beingMusic].src;
         this.audio.loop = true;
-        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        this.audioState = {
-            isPaused: true,
-        }
-        this.target = document.getElementById("soundWave");
-        this.volumeController = document.getElementById("soundVolume")
-        this.volumeController.value = this.audio.volume;
-        this.stateIcon = document.getElementById("state")
-
-        if (this.audioState.isPaused) {
-            this.stateIcon.innerText = "pause";
-        }
-
-        this.canvas.width = this.target.clientWidth;
-        this.canvas.height = this.target.clientHeight;
-
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-
+        this.audio.volume = parseFloat(this.volumeController.value) || 0.5;
         document.body.appendChild(this.audio);
-        this.target.appendChild(this.canvas);
 
-        this.prevTag = document.getElementById("prev");
-        this.nextTag = document.getElementById("next");
-        this.prevTag.addEventListener("click", this.prev.bind(this));
-        this.nextTag.addEventListener("click", this.next.bind(this));
-
-        this.volumeController.addEventListener("input", this.volumeChange.bind(this));
+        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        this.audioState = { isPaused: true };
 
         this.source = this.audioCtx.createMediaElementSource(this.audio);
         this.analyser = this.audioCtx.createAnalyser();
-        this.analyser.fftSize = 1024;
-
+        this.analyser.fftSize = 256;
         this.source.connect(this.analyser);
         this.analyser.connect(this.audioCtx.destination);
 
         this.bufferLength = this.analyser.frequencyBinCount;
         this.dataArray = new Uint8Array(this.bufferLength);
 
+        // ----- Canvas -----
+        this.canvas = document.createElement('canvas');
+        this.canvas.classList.add('wave');
+        this.ctx = this.canvas.getContext('2d');
+        this.target.appendChild(this.canvas);
+
+        // ----- Events -----
+        this.prevTag.addEventListener('click', this.prev.bind(this));
+        this.nextTag.addEventListener('click', this.next.bind(this));
+        this.playToggle.addEventListener('click', this.playMusic.bind(this));
+        this.canvas.addEventListener('click', this.playMusic.bind(this));
+        if (this.hint) this.hint.addEventListener('click', this.playMusic.bind(this));
+        this.volumeController.addEventListener('input', this.volumeChange.bind(this));
         window.addEventListener('resize', this.resize.bind(this), false);
+
+        this.buildPlaylist();
+        this.updateTrackInfo();
+        this.updateVolumeIcon();
         this.resize();
-        this.canvas.addEventListener('click', this.playMusic.bind(this))
-        this.stateIcon.addEventListener('click', this.playMusic.bind(this))
         this.draw();
     }
-    resize() {
-        this.canvas.width = this.target.clientWidth;
-        this.canvas.height = this.target.clientHeight;
 
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
+    resize() {
+        const dpr = window.devicePixelRatio || 1;
+        const w = this.target.clientWidth;
+        const h = this.target.clientHeight;
+        this.canvas.width = w * dpr;
+        this.canvas.height = h * dpr;
+        this.canvas.style.width = w + 'px';
+        this.canvas.style.height = h + 'px';
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        this.width = w;
+        this.height = h;
     }
+
+    accent() {
+        const styles = getComputedStyle(document.documentElement);
+        return {
+            main: (styles.getPropertyValue('--accent') || '#7a9ce0').trim(),
+            hover: (styles.getPropertyValue('--accent-hover') || '#a3c2f0').trim(),
+        };
+    }
+
     playMusic() {
         this.audioCtx.resume().then(() => {
             if (this.audioState.isPaused) {
                 this.audio.play();
-                this.stateIcon.innerText = "pause";
+                this.stateIcon.innerText = 'pause';
             } else {
                 this.audio.pause();
-                this.stateIcon.innerText = "play_arrow";
+                this.stateIcon.innerText = 'play_arrow';
             }
             this.audioState.isPaused = !this.audioState.isPaused;
-        })
-        console.log(this.stateIcon)
+            this.playToggle.classList.toggle('is-playing', !this.audioState.isPaused);
+            if (this.hint) this.hint.classList.toggle('hidden', !this.audioState.isPaused);
+        });
     }
+
     draw() {
         requestAnimationFrame(this.draw.bind(this));
         this.analyser.getByteFrequencyData(this.dataArray);
-        this.ctx.fillStyle = 'rgb(2, 2, 2)';
-        this.ctx.fillRect(0, 0, this.width, this.height);
-        const barWidth = (this.width / this.bufferLength) * 2.5;
-        let barHeight;
+
+        const w = this.width;
+        const h = this.height;
+        this.ctx.clearRect(0, 0, w, h);
+
+        const bars = 48;
+        const gap = 3;
+        const barWidth = (w - gap * (bars - 1)) / bars;
+        const mid = h / 2;
+        const step = Math.floor(this.bufferLength / bars);
+        const { main, hover } = this.accent();
+
+        const grad = this.ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, hover);
+        grad.addColorStop(1, main);
+        this.ctx.fillStyle = grad;
+
         let x = 0;
-        for (let i = 0; i < this.bufferLength; i++) {
-            barHeight = this.dataArray[i] / 2;
-            this.ctx.fillStyle = `rgb(50, 50, 200)`;
-            this.ctx.fillRect(x, this.height - barHeight, barWidth, barHeight);
-            x += barWidth + 1;
+        for (let i = 0; i < bars; i++) {
+            const value = this.dataArray[i * step] || 0;
+            const barHeight = Math.max((value / 255) * (h * 0.9), 3);
+            const y = mid - barHeight / 2;
+            const r = Math.min(barWidth / 2, 4);
+            this.roundRect(x, y, barWidth, barHeight, r);
+            x += barWidth + gap;
+        }
+    }
+
+    roundRect(x, y, w, h, r) {
+        const ctx = this.ctx;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    buildPlaylist() {
+        if (!this.playlistEl) return;
+        this.playlistEl.innerHTML = '';
+        this.tracks.forEach((track, index) => {
+            const li = document.createElement('li');
+            li.className = 'playlist-item';
+            li.innerHTML = `
+                <span class="playlist-num">${String(index + 1).padStart(2, '0')}</span>
+                <span class="playlist-info">
+                    <span class="playlist-title">${track.title}</span>
+                    <span class="playlist-mood">${track.mood}</span>
+                </span>
+                <span class="material-symbols-outlined playlist-icon">graphic_eq</span>
+            `;
+            li.addEventListener('click', () => this.selectTrack(index));
+            this.playlistEl.appendChild(li);
+        });
+    }
+
+    selectTrack(index) {
+        this.beingMusic = index;
+        this.loadTrack(true);
+    }
+
+    loadTrack(forcePlay) {
+        this.audio.src = this.tracks[this.beingMusic].src;
+        this.updateTrackInfo();
+        if (forcePlay || !this.audioState.isPaused) {
+            this.audioCtx.resume().then(() => {
+                this.audio.play();
+                this.stateIcon.innerText = 'pause';
+                this.audioState.isPaused = false;
+                this.playToggle.classList.add('is-playing');
+                if (this.hint) this.hint.classList.add('hidden');
+            });
+        }
+    }
+
+    updateTrackInfo() {
+        const track = this.tracks[this.beingMusic];
+        this.trackTitle.innerText = track.title;
+        this.trackSub.innerText = track.mood;
+        this.trackCount.innerText = `${this.beingMusic + 1} / ${this.tracks.length}`;
+        if (this.playlistEl) {
+            [...this.playlistEl.children].forEach((li, i) => {
+                li.classList.toggle('active', i === this.beingMusic);
+            });
         }
     }
 
     prev() {
-        this.beingMusic -= 1;
-        if (this.beingMusic < 0) {
-            this.beingMusic = this.audioList.length - 1;
-            this.audio.src = this.audioList[this.beingMusic]
-        } else {
-            this.audio.src = this.audioList[this.beingMusic];
-        }
+        this.beingMusic = (this.beingMusic - 1 + this.tracks.length) % this.tracks.length;
+        this.loadTrack(false);
     }
+
     next() {
-        this.beingMusic += 1;
-        console.log(this.beingMusic)
-        if (this.beingMusic > this.audioList.length - 1) {
-            this.beingMusic = 0;
-            this.audio.src = this.audioList[this.beingMusic]
-        } else {
-            this.audio.src = this.audioList[this.beingMusic];
-        }
+        this.beingMusic = (this.beingMusic + 1) % this.tracks.length;
+        this.loadTrack(false);
     }
 
     volumeChange() {
         this.audio.volume = this.volumeController.value;
+        this.updateVolumeIcon();
+    }
+
+    updateVolumeIcon() {
+        if (!this.volumeIcon) return;
+        const v = parseFloat(this.volumeController.value);
+        this.volumeIcon.innerText = v === 0 ? 'volume_off' : v < 0.5 ? 'volume_down' : 'volume_up';
     }
 }
 
 window.onload = () => {
     new Soundwave();
-}
-
+};
