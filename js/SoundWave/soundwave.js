@@ -21,13 +21,23 @@ class Soundwave {
         this.trackCount = document.getElementById('trackCount');
         this.volumeIcon = document.getElementById('volumeIcon');
         this.playlistEl = document.getElementById('playlist');
+        this.loadingEl = document.getElementById('visualizerLoading');
+
+        this._prefetched = new Set();
 
         // ----- Audio -----
         this.audio = document.createElement('audio');
+        this.audio.preload = 'auto';
         this.audio.src = this.tracks[this.beingMusic].src;
         this.audio.loop = true;
         this.audio.volume = parseFloat(this.volumeController.value) || 0.5;
         document.body.appendChild(this.audio);
+
+        // 로딩 상태 표시: 버퍼링 시작 → 스피너, 재생 가능 → 숨김
+        this.audio.addEventListener('waiting', () => this.setLoading(true));
+        this.audio.addEventListener('stalled', () => this.setLoading(true));
+        this.audio.addEventListener('playing', () => this.setLoading(false));
+        this.audio.addEventListener('canplay', () => this.setLoading(false));
 
         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         this.audioState = { isPaused: true };
@@ -59,8 +69,27 @@ class Soundwave {
         this.buildPlaylist();
         this.updateTrackInfo();
         this.updateVolumeIcon();
+        this.prefetchNeighbors();
         this.resize();
         this.draw();
+    }
+
+    setLoading(isLoading) {
+        if (!this.loadingEl) return;
+        this.loadingEl.classList.toggle('active', isLoading);
+    }
+
+    prefetch(url) {
+        if (this._prefetched.has(url)) return;
+        this._prefetched.add(url);
+        // 브라우저 HTTP 캐시를 미리 데워 두면 트랙 전환이 즉시 이뤄짐
+        fetch(url, { cache: 'force-cache' }).catch(() => this._prefetched.delete(url));
+    }
+
+    prefetchNeighbors() {
+        const n = this.tracks.length;
+        this.prefetch(this.tracks[(this.beingMusic + 1) % n].src);
+        this.prefetch(this.tracks[(this.beingMusic - 1 + n) % n].src);
     }
 
     resize() {
@@ -87,6 +116,7 @@ class Soundwave {
     playMusic() {
         this.audioCtx.resume().then(() => {
             if (this.audioState.isPaused) {
+                if (this.audio.readyState < 3) this.setLoading(true);
                 this.audio.play();
                 this.stateIcon.innerText = 'pause';
             } else {
@@ -169,7 +199,9 @@ class Soundwave {
     loadTrack(forcePlay) {
         this.audio.src = this.tracks[this.beingMusic].src;
         this.updateTrackInfo();
+        this.prefetchNeighbors();
         if (forcePlay || !this.audioState.isPaused) {
+            this.setLoading(true);
             this.audioCtx.resume().then(() => {
                 this.audio.play();
                 this.stateIcon.innerText = 'pause';
