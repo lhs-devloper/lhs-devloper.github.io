@@ -24,4 +24,11 @@ export const PROJECTS = [
         link: "./maplequiz/index.html",
         thumb: "./images/3.jpg",
     },
+    {
+        title: "IDC Deploy",
+        desc: "원격 IDC 서버(SFTP·FTP)의 파일을 VSCode에서 바로 열어보고, 편집·저장하면 자동으로 업로드하는 사내 전용 확장 프로그램입니다. 충돌 감지·Diff 비교·다중 서버 관리와 OS 키체인 기반 인증을 지원합니다.",
+        tags: ["VSCode Extension", "TypeScript", "SFTP/FTP"],
+        link: "https://vscode.lhs-devloper.com/docs/help.html",
+        thumb: "./images/4.jpg",
+    },
 ];
